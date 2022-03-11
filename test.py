@@ -26,12 +26,11 @@ for node in g:
 for i in range(len(nodes)):
     exit = near_exit(g, nodes[i].node_name, exit_array)
     if exit == nodes[i].node_name:
-            nodes[i].distance_to_exit=0
+        nodes[i].distance_to_exit=0
         nodes[i].next_node = None
     else:
         d, prev = dijkstra(g, nodes[i].node_name, exit)
         path = find_path(prev, exit)
-        print(d, prev, path)
         nodes[i].next_node = next_node(path)
         nodes[i].distance_to_exit = d
 
