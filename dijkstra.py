@@ -13,6 +13,12 @@ def build_graph(edge_list):
         graph[dst].append((src, weight))  # remove this line of edge list is directed
     return graph
 
+def update_graph(graph, edge_list):
+    for src, dst, weight in edge_list:
+        for dst2, weight2 in graph[src]:
+            if dst2 == dst and weight2 != weight:
+                graph[src] = (dst, weight)
+                graph[dst] = (src, weight)
 
 def dijkstra(graph, src, dst=None):
     nodes = []
