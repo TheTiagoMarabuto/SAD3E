@@ -8,7 +8,6 @@
 
 from collections import defaultdict
 
-# HELLLLLO
 # Class to represent a graph
 class Graph:
 
