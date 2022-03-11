@@ -31,9 +31,25 @@ def read_nodes_from_graph(graph, exit_array):
 
 
 def insert_fire(edges, pointA, pointB):
-    new_edges = []
-
+    fire = []
     for src, dst, weight in edges:
         if (src == pointA and dst == pointB) or (src == pointB and dst == pointA):
+            if(weight == float('inf')):
+                print("There was already a fire")
             edges.remove((src, dst, weight))
             edges.append((src, dst, float('inf')))
+            print("Fire Added between", src, "and", dst)
+            fire.append((src, dst, weight))
+    return fire
+
+
+def put_out_fire(fire, edges, pointA, pointB):
+    for src, dst, weight in fire:
+        if (src == pointA and dst == pointB) or (src == pointB and dst == pointA):
+            for src1, dst1, weight1 in edges:
+                if ((src1 == pointA and dst1 == pointB) or (src1 == pointB and dst1 == pointA)) and (
+                        weight1 == float('inf')):
+                        edges.remove((src1, dst1, weight1))
+                        edges.append((src1, dst1, weight))
+                        fire.remove((src, dst, weight))
+                        print("Fire Put out between", src, "and", dst)
