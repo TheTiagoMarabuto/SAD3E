@@ -48,5 +48,5 @@ def read_excel(sheet, edges):
 
     for i in range(nrows):
         for j in range(ncols):
-            if (type(sheet.cell_value(j, i)) == str ) and (sheet.cell_value(j, i) != ""):
+            if (type(sheet.cell_value(i, j)) == str ) and (sheet.cell_value(i, j) != ""):
                 read_graph_edges(sheet, edges, i, j)
