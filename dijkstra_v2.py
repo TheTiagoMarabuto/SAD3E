@@ -57,6 +57,8 @@ def dijkstra_distance(nodes, src_node):
             if dist[dst] > dist[u[1]] + weight:
                 dist[dst] = dist[u[1]] + weight
                 prev[dst] = u[1]
+
+    # SEE IF DECREASE_KEY(H,V) MAKES ANY DIFFERENCE (OneNote pseudo code)
     return dist
 
 
