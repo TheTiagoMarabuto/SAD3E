@@ -5,9 +5,12 @@ from fibheap import *
 
 
 class Node:
-    def __init__(self, next_node=None, distance_to_exit=1806199818061998):
+    def __init__(self, next_node=None, distance_to_exit=1806199818061998, exit=None):
         self.next_node = next_node
         self.distance_to_exit = distance_to_exit
+        # --TEMPORARY EXIT VARIABLE-- #
+        self.exit = exit
+        # --------------------------- #
         self.edges = []
 
     def set_distance(self, distance_to_exit):
@@ -15,6 +18,12 @@ class Node:
 
     def set_next_node(self, next_node):
         self.next_node = next_node
+
+    def get_distance(self):
+        return self.distance_to_exit
+
+    def get_next_node(self):
+        return self.next_node
 
 
 def build_graph(edges):
@@ -27,11 +36,6 @@ def build_graph(edges):
         nodes[src].edges.append((dst, weight))
         nodes[dst].edges.append((src, weight))
     return nodes
-
-
-def set_exits(nodes, exit_array):
-    for exit in exit_array:
-        nodes[exit].set_distance(0)
 
 
 def dijkstra_distance(nodes, src_node):
@@ -53,6 +57,12 @@ def dijkstra_distance(nodes, src_node):
             if dist[dst] > dist[u[1]] + weight:
                 dist[dst] = dist[u[1]] + weight
                 prev[dst] = u[1]
-    return dist, prev
+    return dist
 
 
+def choose_nearest_exit(nodes, exit_array):
+    for exit in exit_array:
+        for node, distance in dijkstra_distance(nodes, exit):
+            if nodes[node].get_distance() > distance:
+                nodes[node].set_distance(distance)
+                nodes[node].exit = exit
