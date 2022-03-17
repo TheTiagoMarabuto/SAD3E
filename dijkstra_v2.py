@@ -1,5 +1,6 @@
 # @author - Tiago Marabuto
-# based on source code from Ran Ding (https://gist.github.com/dingran/b827b65a252000e25d818ba3520242e1)
+
+
 from collections import defaultdict
 from fibheap import *
 
@@ -58,13 +59,13 @@ def dijkstra_distance(nodes, src_node):
                 dist[dst] = dist[u[1]] + weight
                 prev[dst] = u[1]
 
-    # SEE IF DECREASE_KEY(H,V) MAKES ANY DIFFERENCE (OneNote pseudo code)
+    # SEE IF DECREASE_KEY(H,V) MAKES ANY DIFFERENCE (see OneNote pseudocode)
     return dist
 
 
 def choose_nearest_exit(nodes, exit_array):
     for exit in exit_array:
-        for node, distance in dijkstra_distance(nodes, exit):
-            if nodes[node].get_distance() > distance:
-                nodes[node].set_distance(distance)
-                nodes[node].exit = exit
+        for distance in dijkstra_distance(nodes, exit).items():
+            if nodes[distance[0]].get_distance() > distance[1]:
+                nodes[distance[0]].set_distance(distance[1])
+                nodes[distance[0]].exit = exit

@@ -29,6 +29,7 @@ def dijkstra(graph, src, dst=None):
         nodes += [x[0] for x in graph[n]]
 
     q = set(nodes)
+
     nodes = list(q)
     dist = dict()
     prev = dict()
