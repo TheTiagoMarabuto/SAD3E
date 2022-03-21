@@ -3,16 +3,17 @@
 import json
 
 
-# edges type list; edge_dict type dictionary
-# function to turn dictionary of edges in edge list
+# -------------- NO NEED ------------------------------------
+# edges type -> list; edge_dict type -> dictionary          |
+# function to turn dictionary of edges in edge list         |
 def dict_toList(edges, edge_dict):
     for src_node in edge_dict:
         for dst, weight in zip(edge_dict.get(src_node).get("dst"), edge_dict.get(src_node).get("weight")):
             edges.append((src_node, dst, weight))
 
 
-# edges type list; edge_dict type dictionary
-# function to turn edge list in dictionary of edges
+# edges type -> list; edge_dict type -> dictionary          |
+# function to turn edge list in dictionary of edges         |
 def list_toDict(edges, edge_dict):
     for src, dst, weight in edges:
         if src in edge_dict.keys():
@@ -26,6 +27,9 @@ def list_toDict(edges, edge_dict):
             }
             })
 
+#                                                           |
+# -----------------------------------------------------------
+
 
 # creates JSON file with name = filename
 def create_json_file(filename):
@@ -38,11 +42,17 @@ def create_json_file(filename):
         file.close()
 
 
-# writes string to file object
-def write_json(file, string):
+# writes dictionary to file with name filename
+def write_json(filename, mode, dict):
+    file = open(filename, mode)
+    string = str(dict)
     json.dump(string, file, indent=2)
+    file.close()
 
 
-# reads from file object and returns a string
-def read_json(file):
-    return json.load(file)
+# reads from filename and returns a dictionary
+def read_json(filename):
+    file = open(filename, "r")
+    aux = json.load(file)
+    file.close()
+    return aux

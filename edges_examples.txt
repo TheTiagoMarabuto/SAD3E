@@ -1,14 +1,20 @@
 edges = {
     "A": {
         "dst": ["B", "C"],
-        "weight": [12, 13, ]
+        "weight": [12, 13],
+        "hazard": [2,1],
+        "location": (5, 10,0)
     },
     "B": {
         "dst": ["A", "C"],
-        "weight": [12, 23]
+        "weight": [12, 23],
+        "hazard": [2,1],
+        "location": (10, 10,0)
     },
     "C": {
         "dst": ["A", "B"],
-        "weight": [13, 23]
+        "weight": [13, 23],
+        "hazard": [1,1],
+        "location": (5, 15,0)
     }
 }
