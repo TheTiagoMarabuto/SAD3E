@@ -1,3 +1,7 @@
+from dijkstra_v2 import *
+from tools import*
+
+
 edges = {
     "A": {
         "dst": ["B", "C", "E"],
@@ -37,3 +41,16 @@ edges = {
     }
 
 }
+
+exit_array = ["A", "B"]
+
+nodes = build_graph(edges)
+set_nearest_exit(nodes, exit_array)
+
+print(nodes["C"].exit, nodes["C"].next_node)
+
+change_hazard_intensity(nodes["C"], nodes["A"], 20)
+
+set_nearest_exit(nodes, exit_array)
+
+print(nodes["C"].exit, nodes["C"].next_node)
