@@ -7,8 +7,6 @@ import matplotlib.pyplot as plt
 import pylab
 
 
-
-
 # creates JSON file with name = filename
 def create_json_file(filename):
     try:
@@ -37,14 +35,6 @@ def read_json(filename):
 
 
 def draw_graph(graph):
-    options = {
-        'node_color': 'blue',
-        'node_size': 100,
-        'width': 3,
-        'arrowsize': 12,
-    }
-
-
     G = nx.Graph()
     for node in graph:
         G.add_node(node, pos=graph[node].location[0:2])
@@ -60,8 +50,6 @@ def draw_graph(graph):
     edge_labels = dict([((u, v,), d['weight'])
                         for u, v, d in G.edges(data=True)])
     pos = nx.get_node_attributes(G, 'pos')
-    #nx.draw(G,pos)
     nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels)
     nx.draw(G, pos, node_size=200, with_labels=True, edge_cmap=plt.cm.Reds)
-    #nx.draw(G,pos,options)
     pylab.show()
