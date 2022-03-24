@@ -51,5 +51,5 @@ def draw_graph(graph):
                         for u, v, d in G.edges(data=True)])
     pos = nx.get_node_attributes(G, 'pos')
     nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels)
-    nx.draw(G, pos, node_size=200, with_labels=True, edge_cmap=plt.cm.Reds)
+    nx.draw(G, pos, node_size=180, with_labels=True, edge_cmap=plt.cm.Reds)
     pylab.show()
