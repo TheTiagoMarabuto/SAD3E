@@ -1,34 +1,12 @@
 # @author - Tiago Marabuto
 
 import json
+import networkx as nx
+from collections import defaultdict
+import matplotlib.pyplot as plt
+import pylab
 
 
-# -------------- NO NEED ------------------------------------
-# edges type -> list; edge_dict type -> dictionary          |
-# function to turn dictionary of edges in edge list         |
-def dict_toList(edges, edge_dict):
-    for src_node in edge_dict:
-        for dst, weight in zip(edge_dict.get(src_node).get("dst"), edge_dict.get(src_node).get("weight")):
-            edges.append((src_node, dst, weight))
-
-
-# edges type -> list; edge_dict type -> dictionary          |
-# function to turn edge list in dictionary of edges         |
-def list_toDict(edges, edge_dict):
-    for src, dst, weight in edges:
-        if src in edge_dict.keys():
-            if dst not in edge_dict.get(src).get("dst"):
-                edge_dict.get(src).get("dst").append(dst)
-                edge_dict.get(src).get("weight").append(weight)
-        else:
-            edge_dict.update({src: {
-                "dst": [dst],
-                "weight": [weight]
-            }
-            })
-
-#                                                           |
-# -----------------------------------------------------------
 
 
 # creates JSON file with name = filename
@@ -56,3 +34,34 @@ def read_json(filename):
     aux = json.load(file)
     file.close()
     return aux
+
+
+def draw_graph(graph):
+    options = {
+        'node_color': 'blue',
+        'node_size': 100,
+        'width': 3,
+        'arrowsize': 12,
+    }
+
+
+    G = nx.Graph()
+    for node in graph:
+        G.add_node(node, pos=graph[node].location[0:2])
+    seen_edges = defaultdict(int)
+    for node in graph:
+        for dst, weight, hazard in graph[node].edges:
+            seen_edges[(node, dst)] += 1
+            seen_edges[(dst, node)] += 1
+            if seen_edges[(node, dst)] > 1:  # checking for duplicated edge entries
+                continue
+            G.add_edge(node, dst, weight=weight * hazard)
+
+    edge_labels = dict([((u, v,), d['weight'])
+                        for u, v, d in G.edges(data=True)])
+    pos = nx.get_node_attributes(G, 'pos')
+    #nx.draw(G,pos)
+    nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels)
+    nx.draw(G, pos, node_size=200, with_labels=True, edge_cmap=plt.cm.Reds)
+    #nx.draw(G,pos,options)
+    pylab.show()

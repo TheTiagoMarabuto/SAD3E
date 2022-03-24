@@ -1,6 +1,6 @@
 edges = {
     "A": {
-        "dst": ["B", "C", "E"],
+        "dst": ["B"],
         "weight": [12, 13, 15],
         "hazard": [1,1,1],
         "location": (5, 10,0)
@@ -37,3 +37,17 @@ edges = {
     }
 
 }
+
+
+''' while heap.num_nodes:
+        u = fheappop(heap)
+        u = heap.extract_min()
+        for dst, weight, hazard in graph[u.key[1]].edges:
+            if dist[dst] > dist[u.key[1]] + weight * hazard:
+                dist[dst] = dist[u.key[1]] + weight * hazard
+                prev[dst] = u.key[1]
+                #print(u.key)
+                heap.decrease_key(heap[dst], prev[dst])
+
+    # SEE IF DECREASE_KEY(H,V) MAKES ANY DIFFERENCE (see OneNote pseudocode)
+    ## CHECK WITH BIGGER GRAPHS, SMALL GRAPHS DON'T SHOW DIFFERENCE'''
