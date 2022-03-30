@@ -50,6 +50,6 @@ def draw_graph(graph):
     edge_labels = dict([((u, v,), d['weight'])
                         for u, v, d in G.edges(data=True)])
     pos = nx.get_node_attributes(G, 'pos')
-    nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels)
-    nx.draw(G, pos, node_size=180, with_labels=True, edge_cmap=plt.cm.Reds)
+    nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels, font_size=4, verticalalignment='top')
+    nx.draw(G, pos, node_size=180, with_labels=True, edge_cmap=plt.cm.Reds, font_size = 8)
     pylab.show()

@@ -1,9 +1,5 @@
 from dijkstra import *
 from tools import *
-import time
-from datetime import datetime
-
-start_time = datetime.now()
 
 edges = {
     "A": {
@@ -208,26 +204,5 @@ edges = {
 }
 
 exit_array = ["S", "U"]
-# start_time = time.time()
 graph = build_graph(edges)
 set_nearest_exit(graph, exit_array)
-print("time: ", datetime.now() - start_time)
-
-while 1:
-
-    if input("Print graph? (y/n) ") == ("y" or "Y"):
-        draw_graph(graph)
-    if input("Print directions? (y/n) ") == ("y" or "Y"):
-        for node in graph:
-            print("From node:", graph[node].name, "go to:", graph[node].next_node, "and the distance to exit is:",
-                  graph[node].distance_to_exit)
-    if input("Change hazard intensity? (y/n) ") == ("y" or "Y"):
-        a, b = input("Between each nodes? ").split()
-        c = int(input("Hazard intensity? "))
-        print("changing between", a, "and", b, "to", c)
-        change_hazard_intensity(graph[a], graph[b], c, graph, exit_array)
-
-        affected_area(graph, graph[a], graph[b], c, exit_array)
-
-    if input("Do you want to end the program?(y/n) ") == ("y" or "Y"):
-        break

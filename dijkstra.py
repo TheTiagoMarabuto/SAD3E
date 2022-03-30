@@ -2,10 +2,11 @@
 import heapq
 import math
 from collections import defaultdict
-import heapq as hq
 from fibheap import *
 
 BIGINT = 1806199818061998
+SMALL_R = 20
+BIG_R = 40
 
 
 class Node:
@@ -13,9 +14,7 @@ class Node:
         self.name = name
         self.next_node = next_node
         self.distance_to_exit = distance_to_exit
-        # --TEMPORARY EXIT VARIABLE-- #
         self.exit = exit
-        # --------------------------- #
         self.edges = []
         self.location = location  # node (x, y, z), with z being the floor in which the node is located
 
@@ -57,7 +56,7 @@ def build_graph(edges):
     return graph
 
 
-# calculates distance from src_node to all nodes. returns distance dictionary
+# calculates distance from src_node to all nodes. returns distance dictionary and prev array
 def dijkstra_distance(graph, src_node):
     dist = dict()
     prev = dict()
@@ -67,17 +66,17 @@ def dijkstra_distance(graph, src_node):
 
     dist[src_node] = 0
 
-    heap2 = [(dist[src_node], src_node)]
+    heap = [(dist[src_node], src_node)]
     seen = set()
-    while heap2:
-        dist1, node = heapq.heappop(heap2)
+    while heap:
+        dist1, node = heapq.heappop(heap)
         if node not in seen:
             seen.add(node)
             for dst, weight, hazard in graph[node].edges:
                 if dist[dst] > dist[node] + weight * hazard:
                     dist[dst] = dist[node] + weight * hazard
                     prev[dst] = node
-                    heapq.heappush(heap2, (dist[dst], dst))
+                    heapq.heappush(heap, (dist[dst], dst))
 
     return dist, prev
 
@@ -95,12 +94,13 @@ def set_nearest_exit(graph, exit_array):
                 # print(node, exit, path)
                 if exit != node:
                     graph[node].set_next_node(path[1])
-                    # print(node, "nextnode", graph[node].set_next_node(path[1]))
                 else:
                     graph[node].set_next_node(path[0])
 
 
+# distance between nodes in the same floor
 def distance_between_nodes(nodeA, nodeB):
+    # check if nodes are in the same floor
     if nodeA.location[2] == nodeB.location[2]:
         return math.sqrt((nodeA.location[0] - nodeB.location[0]) ** 2 + (nodeA.location[1] - nodeB.location[1]) ** 2)
     else:
@@ -129,3 +129,51 @@ def find_path(pr, node):  # generate path list based on parent points pr and the
         p.append(aux)
         aux = pr[aux]
     return p  # [::-1]  # Inverted array
+
+
+def in_circle(center, R, node_location):
+    dx = abs(center[0] - node_location[0])
+    if dx > R:
+        return False
+    dy = abs(center[1] - node_location[1])
+    if dy > R:
+        return False
+    if dx + dy <= R:
+        return True
+    return dx * dx + dy * dy <= R * R
+
+
+def same_floor(center, node_location):
+    return center[2] == node_location[2]
+
+
+def get_center(nodeA, nodeB):
+    center = ((nodeA[0] + nodeB[0]) / 2, (nodeA[1] + nodeB[1]) / 2, nodeA[2])
+    return center
+
+
+def affected_area(graph, nodeA, nodeB, hazard_intensity, exit_array):
+    hazard_location = get_center(nodeA.location, nodeB.location)
+    seen = []
+
+    for node in graph:
+        if in_circle(hazard_location, SMALL_R, graph[node].location) and node not in seen:
+            for dst, weight, hazard in graph[node].edges:
+                graph[node].edges.remove((dst, weight, hazard))
+                graph[dst].edges.remove((node, weight, hazard))
+
+                graph[node].edges.append((dst, weight, 0.5 * hazard_intensity))
+                graph[dst].edges.append((node, weight, 0.5 * hazard_intensity))
+            seen.append(node)
+
+        if in_circle(hazard_location, BIG_R, graph[node].location) and node not in seen:
+            for dst, weight, hazard in graph[node].edges:
+                if (hazard != 0.5 * hazard_intensity) and (hazard != 0.25 * hazard_intensity):
+                    graph[node].edges.remove((dst, weight, hazard))
+                    graph[dst].edges.remove((node, weight, hazard))
+
+                    graph[node].edges.append((dst, weight, 0.25 * hazard_intensity))
+                    graph[dst].edges.append((node, weight, 0.25 * hazard_intensity))
+            seen.append(node)
+
+    set_nearest_exit(graph, exit_array)
