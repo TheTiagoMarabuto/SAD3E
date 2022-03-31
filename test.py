@@ -55,7 +55,7 @@ edges = {
         "location": (80, 140, 0)
     },
     "J": {
-        "dst": ["I", "J", "DD", "EE"],
+        "dst": ["I", "K", "DD", "EE"],
         "weight": [20, 10, 14, 14],
         "hazard": [1, 1, 1, 1],
         "location": (110, 140, 0)
@@ -211,12 +211,17 @@ exit_array = ["S", "U"]
 # start_time = time.time()
 graph = build_graph(edges)
 set_nearest_exit(graph, exit_array)
-print("time: ", datetime.now() - start_time)
-
+a, b, c = 0, 0, 0
 while 1:
 
     if input("Print graph? (y/n) ") == ("y" or "Y"):
-        draw_graph(graph)
+
+        if a != 0 and b != 0 and c != 0:
+            draw_graph(graph, get_center(graph[a].location, graph[b].location))
+            a, b, c = 0, 0, 0
+        else:
+            draw_graph(graph)
+
     if input("Print directions? (y/n) ") == ("y" or "Y"):
         for node in graph:
             print("From node:", graph[node].name, "go to:", graph[node].next_node, "and the distance to exit is:",
@@ -225,7 +230,7 @@ while 1:
         a, b = input("Between each nodes? ").split()
         c = int(input("Hazard intensity? "))
         print("changing between", a, "and", b, "to", c)
-        change_hazard_intensity(graph[a], graph[b], c, graph, exit_array)
+        # change_hazard_intensity(graph[a], graph[b], c, graph, exit_array)
 
         affected_area(graph, graph[a], graph[b], c, exit_array)
 

@@ -87,11 +87,9 @@ def set_nearest_exit(graph, exit_array):
         distance, prev = dijkstra_distance(graph, exit)
         for node in graph:
             path = find_path(prev, node)
-            # print(node, graph[node].get_distance(), distance[node])
             if graph[node].get_distance() > distance[node]:
                 graph[node].set_distance(distance[node])
                 graph[node].exit = exit
-                # print(node, exit, path)
                 if exit != node:
                     graph[node].set_next_node(path[1])
                 else:
@@ -154,25 +152,39 @@ def get_center(nodeA, nodeB):
 
 def affected_area(graph, nodeA, nodeB, hazard_intensity, exit_array):
     hazard_location = get_center(nodeA.location, nodeB.location)
+
     seen = []
 
     for node in graph:
+
         if in_circle(hazard_location, SMALL_R, graph[node].location) and node not in seen:
             for dst, weight, hazard in graph[node].edges:
-                graph[node].edges.remove((dst, weight, hazard))
-                graph[dst].edges.remove((node, weight, hazard))
+                if ((node == nodeA.name and dst == nodeB.name) or (dst == nodeA.name and node == nodeB.name)) and ((hazard != 0.5 * hazard_intensity) and (hazard != 0.25 * hazard_intensity)):
+                    index1 = graph[node].edges.index((dst, weight, hazard))
 
-                graph[node].edges.append((dst, weight, 0.5 * hazard_intensity))
-                graph[dst].edges.append((node, weight, 0.5 * hazard_intensity))
+                    graph[node].edges.remove((dst, weight, hazard))
+                    graph[node].edges.insert(index1, (dst, weight, hazard_intensity))
+                    graph[dst].edges.remove((node, weight, hazard))
+                    graph[dst].edges.append((node, weight, hazard_intensity))  # ????
+
+                else:
+                    index1 = graph[node].edges.index((dst, weight, hazard))
+                    graph[node].edges.remove((dst, weight, hazard))
+                    graph[dst].edges.remove((node, weight, hazard))
+                    graph[node].edges.insert(index1, (dst, weight, 0.5 * hazard_intensity))
+                    graph[dst].edges.append((node, weight, 0.5 * hazard_intensity))
+
             seen.append(node)
 
         if in_circle(hazard_location, BIG_R, graph[node].location) and node not in seen:
             for dst, weight, hazard in graph[node].edges:
+
                 if (hazard != 0.5 * hazard_intensity) and (hazard != 0.25 * hazard_intensity):
+                    index1 = graph[node].edges.index((dst, weight, hazard))
                     graph[node].edges.remove((dst, weight, hazard))
                     graph[dst].edges.remove((node, weight, hazard))
 
-                    graph[node].edges.append((dst, weight, 0.25 * hazard_intensity))
+                    graph[node].edges.insert(index1, (dst, weight, 0.25 * hazard_intensity))
                     graph[dst].edges.append((node, weight, 0.25 * hazard_intensity))
             seen.append(node)
 

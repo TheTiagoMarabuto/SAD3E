@@ -1,6 +1,7 @@
 # @author - Tiago Marabuto
 
 import json
+import dijkstra
 import networkx as nx
 from collections import defaultdict
 import matplotlib.pyplot as plt
@@ -34,9 +35,11 @@ def read_json(filename):
     return aux
 
 
-def draw_graph(graph):
+def draw_graph(graph, fire_location=None):
     G = nx.Graph()
+    #G.add_node("Fire", pos=fire_location[0:2])
     for node in graph:
+        #name = node + "->" + graph[node].next_node
         G.add_node(node, pos=graph[node].location[0:2])
     seen_edges = defaultdict(int)
     for node in graph:
@@ -50,6 +53,16 @@ def draw_graph(graph):
     edge_labels = dict([((u, v,), d['weight'])
                         for u, v, d in G.edges(data=True)])
     pos = nx.get_node_attributes(G, 'pos')
-    nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels, font_size=4, verticalalignment='top')
-    nx.draw(G, pos, node_size=180, with_labels=True, edge_cmap=plt.cm.Reds, font_size = 8)
-    pylab.show()
+    f, ax = plt.subplots(1,1)
+    if fire_location:
+        circle1 = plt.Circle(fire_location, dijkstra.BIG_R, color='orange')
+        circle2 = plt.Circle(fire_location, dijkstra.SMALL_R, color='yellow')
+        ax.add_patch(circle1)
+        ax.add_patch(circle2)
+    nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels, font_size=6, verticalalignment='bottom', bbox=dict(boxstyle='round', ec=(1.0, 1.0, 1.0), fc=(1.0, 1.0, 1.0), alpha=0))
+    nx.draw(G, pos, node_size=180, with_labels=True, edge_cmap=plt.cm.Reds, font_size=8)
+    #pylab.show()
+    plt.tight_layout()
+    plt.axis("off")
+
+    plt.show()
