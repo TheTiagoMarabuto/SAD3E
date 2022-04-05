@@ -208,9 +208,11 @@ edges = {
 }
 
 exit_array = ["S", "U"]
-# start_time = time.time()
+#start_time = time.time()
 graph = build_graph(edges)
+start_time = time.time()
 set_nearest_exit(graph, exit_array)
+print("set_nearest_exit time: ", time.time()-start_time)
 a, b, c = 0, 0, 0
 while 1:
 
@@ -231,8 +233,8 @@ while 1:
         c = int(input("Hazard intensity? "))
         print("changing between", a, "and", b, "to", c)
         # change_hazard_intensity(graph[a], graph[b], c, graph, exit_array)
-
+        start_time = time.time()
         affected_area(graph, graph[a], graph[b], c, exit_array)
-
+        print("affected_area time: ", time.time()-start_time)
     if input("Do you want to end the program?(y/n) ") == ("y" or "Y"):
         break

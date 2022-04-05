@@ -55,8 +55,8 @@ def draw_graph(graph, fire_location=None):
     pos = nx.get_node_attributes(G, 'pos')
     f, ax = plt.subplots(1,1)
     if fire_location:
-        circle1 = plt.Circle(fire_location, dijkstra.BIG_R, color='orange')
-        circle2 = plt.Circle(fire_location, dijkstra.SMALL_R, color='yellow')
+        circle1 = plt.Circle(fire_location, dijkstra.BIG_R, color='yellow')
+        circle2 = plt.Circle(fire_location, dijkstra.SMALL_R, color='orange')
         ax.add_patch(circle1)
         ax.add_patch(circle2)
     nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels, font_size=6, verticalalignment='bottom', bbox=dict(boxstyle='round', ec=(1.0, 1.0, 1.0), fc=(1.0, 1.0, 1.0), alpha=0))

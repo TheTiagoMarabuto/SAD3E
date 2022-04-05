@@ -120,7 +120,8 @@ def change_hazard_intensity(nodeA, nodeB, hazard_intensity, graph, exit_array):
             set_nearest_exit(graph, exit_array)
 
 
-def find_path(pr, node):  # generate path list based on parent points pr and the node name
+# generate path list based on parent points pr and the node name
+def find_path(pr, node):
     p = []
     aux = node
     while aux is not None:
@@ -153,19 +154,24 @@ def get_center(nodeA, nodeB):
 def affected_area(graph, nodeA, nodeB, hazard_intensity, exit_array):
     hazard_location = get_center(nodeA.location, nodeB.location)
 
-    seen = []
+    seen_nodes = []
+    seen_edges = []
 
     for node in graph:
 
-        if in_circle(hazard_location, SMALL_R, graph[node].location) and node not in seen:
+        if in_circle(hazard_location, SMALL_R, graph[node].location) and node not in seen_nodes:
             for dst, weight, hazard in graph[node].edges:
-                if ((node == nodeA.name and dst == nodeB.name) or (dst == nodeA.name and node == nodeB.name)) and ((hazard != 0.5 * hazard_intensity) and (hazard != 0.25 * hazard_intensity)):
+                if ((node == nodeA.name and dst == nodeB.name) or (dst == nodeA.name and node == nodeB.name)) and (dst,
+                                                                                                                   node) not in seen_edges:  # ((hazard != 0.5 * hazard_intensity) and (hazard != 0.25 * hazard_intensity)):
                     index1 = graph[node].edges.index((dst, weight, hazard))
 
                     graph[node].edges.remove((dst, weight, hazard))
                     graph[node].edges.insert(index1, (dst, weight, hazard_intensity))
+                    seen_edges.append((node, dst))
+
                     graph[dst].edges.remove((node, weight, hazard))
                     graph[dst].edges.append((node, weight, hazard_intensity))  # ????
+                    seen_edges.append((dst, node))
 
                 else:
                     index1 = graph[node].edges.index((dst, weight, hazard))
@@ -174,18 +180,23 @@ def affected_area(graph, nodeA, nodeB, hazard_intensity, exit_array):
                     graph[node].edges.insert(index1, (dst, weight, 0.5 * hazard_intensity))
                     graph[dst].edges.append((node, weight, 0.5 * hazard_intensity))
 
-            seen.append(node)
+            seen_nodes.append(node)
 
-        if in_circle(hazard_location, BIG_R, graph[node].location) and node not in seen:
+        if in_circle(hazard_location, BIG_R, graph[node].location) and node not in seen_nodes:
             for dst, weight, hazard in graph[node].edges:
 
-                if (hazard != 0.5 * hazard_intensity) and (hazard != 0.25 * hazard_intensity):
+                if (dst,
+                    node) not in seen_edges:  # (hazard != 0.5 * hazard_intensity) and (hazard != 0.25 * hazard_intensity):
                     index1 = graph[node].edges.index((dst, weight, hazard))
-                    graph[node].edges.remove((dst, weight, hazard))
-                    graph[dst].edges.remove((node, weight, hazard))
 
+                    graph[node].edges.remove((dst, weight, hazard))
                     graph[node].edges.insert(index1, (dst, weight, 0.25 * hazard_intensity))
+                    seen_edges.append((node, dst))
+
+                    graph[dst].edges.remove((node, weight, hazard))
                     graph[dst].edges.append((node, weight, 0.25 * hazard_intensity))
-            seen.append(node)
+                    seen_edges.append((dst, node))
+
+            seen_nodes.append(node)
 
     set_nearest_exit(graph, exit_array)
