@@ -1,9 +1,10 @@
-import sys
+import sys, os
 from PyQt5.QtWidgets import QMainWindow, QApplication, QLabel, QTextEdit, QPushButton, QFileDialog, QMainWindow
-from PyQt5 import uic
+from PyQt5 import uic, QtSvg
 from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QPixmap
-from window import Ui_window
+from PyQt5.QtGui import QPixmap, QPainter
+#from window import Ui_window
+from window2 import Ui_window
 
 
 class UI(QMainWindow):
@@ -11,7 +12,7 @@ class UI(QMainWindow):
         super(UI, self).__init__()
 
         # Load the ui file
-        uic.loadUi("/Users/tiagomarabuto/PycharmProjects/SAD3E/mainwindow.ui", self)
+        uic.loadUi("mainwindow.ui", self)
 
         # Load second window
         self.window = QMainWindow()
@@ -27,16 +28,11 @@ class UI(QMainWindow):
         self.show()
 
     def clicker(self):
-        fname = QFileDialog.getOpenFileName(self, "Open File", "", "PNG (*.png);;JPEG (*.jpeg) ")[0]
+        fname = QFileDialog.getOpenFileName(self, "Open File", "", "SVG (*.svg);;PNG (*.png);;JPEG (*.jpeg) ")[0]
         self.openWindow(fname)
 
     def openWindow(self, filename):
-
-        self.ui.setupUi(self.window)
-        # Open image
-        pixmap = QPixmap(filename)
-        #adjusted_pixmap = pixmap.scaled(900, 900, Qt.KeepAspectRatio)
-        self.ui.image.setPixmap(pixmap)
+        self.ui.setupUi(self.window, filename)
         self.window.show()
 
 
